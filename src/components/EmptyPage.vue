@@ -1,9 +1,7 @@
 <template>
-  <div class="page-content bg-white d-flex p-2">
-    <div class="flex-grow-1 d-flex align-items-center justify-content-center">
-      <div class="text-center">
-        <slot></slot>
-      </div>
+  <div class="page-content">
+    <div class="block block-strong text-align-center">
+      <slot></slot>
     </div>
   </div>
 </template>

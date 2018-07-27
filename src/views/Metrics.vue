@@ -1,44 +1,47 @@
 <template>
-  <div class="page">
-    <app-titlebar>
-      <span slot="middle">Jednotky</span>
-      <router-link slot="right" to="/metrics-edit/0" tag="span" class="text-primary">Nová</router-link>
-    </app-titlebar>
+  <div class="view">
+    <!-- Initial Page, "data-name" contains page name -->
+    <div class="page">
+      <app-navbar>
+        <span slot="title">Jednotky</span>
+        <router-link slot="right" to="/metrics-edit/0">Nová</router-link>
+      </app-navbar>
 
-    <empty-page v-if="metrics.length === 0">
-      <p>Zatím nemáš založenou<br>žádnou počítanou jednotku.</p>
-      <router-link to="/metrics-edit/0" class="p-4 text-primary" tag="span">Přidat jednotku</router-link>
-    </empty-page>
+      <empty-page v-if="metrics.length === 0">
+        <p>Zatím nemáš založenou<br>žádnou počítanou jednotku.</p>
+        <router-link to="/metrics-edit/0">Přidat jednotku</router-link>
+      </empty-page>
 
-    <div v-if="metrics.length" class="page-content bg-white">
-      <ul
-        v-if="metrics.length"
-        class="list-group list-group-flush border-bottom"
-      >
-        <router-link
-          v-for="metric in metrics"
-          v-bind:to="`/metrics/${metric.id}`"
-          v-bind:key="metric.id"
-          v-on:click="iterate(metric.id)"
-          class="list-group-item d-flex justify-content-between align-items-center no-color"
-          tag="span"
+      <div v-if="metrics.length" class="page-content">
+        <ul
+          v-if="metrics.length"
+          class="list-group list-group-flush border-bottom"
         >
-          <span class="vertical-top">
-            <span class="lead mt-1">{{ metric.emoji }}&ensp;</span>
-            <span class="align-text-bottom">{{ metric.name }}</span>
-          </span>
-          <i class="icon ion-ios-arrow-forward"></i>
-        </router-link>
-      </ul>
-    </div>
+          <router-link
+            v-for="metric in metrics"
+            v-bind:to="`/metrics/${metric.id}`"
+            v-bind:key="metric.id"
+            v-on:click="iterate(metric.id)"
+            class="list-group-item d-flex justify-content-between align-items-center no-color"
+            tag="span"
+          >
+            <span class="vertical-top">
+              <span class="lead mt-1">{{ metric.emoji }}&ensp;</span>
+              <span class="align-text-bottom">{{ metric.name }}</span>
+            </span>
+            <i class="icon ion-ios-arrow-forward"></i>
+          </router-link>
+        </ul>
+      </div>
 
-    <app-navigation></app-navigation>
+      <app-toolbar></app-toolbar>
+    </div>
   </div>
 </template>
 
 <script>
-import AppNavigation from '../components/AppNavigation.vue'
-import AppTitlebar from '../components/AppTitlebar.vue'
+import AppToolbar from '../components/AppToolbar.vue'
+import AppNavbar from '../components/AppNavbar.vue'
 import EmptyPage from '../components/EmptyPage.vue'
 
 export default {
@@ -59,8 +62,8 @@ export default {
     }
   },
   components: {
-    AppNavigation,
-    AppTitlebar,
+    AppToolbar,
+    AppNavbar,
     EmptyPage,
   }
 }

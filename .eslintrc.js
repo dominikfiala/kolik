@@ -10,7 +10,8 @@ module.exports = {
     'eslint:recommended'
   ],
   rules: {
-    // "no-unused-vars": "off"
+    // "no-unused-vars": "off",
+    'no-console': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',

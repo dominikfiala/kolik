@@ -1,40 +1,24 @@
 <template>
-  <div class="page">
-    <app-titlebar>
-      <span slot="middle">Přidat záznam</span>
-    </app-titlebar>
+  <div class="view">
+    <!-- Initial Page, "data-name" contains page name -->
+    <div class="page">
+      <app-navbar>
+        <span slot="title">Nový záznam</span>
+      </app-navbar>
 
-    <empty-page v-if="metrics.length === 0">
-      <p>Zatím nemáš založenou<br>žádnou počítanou jednotku.</p>
-      <router-link to="/metrics-edit/0" tag="span" class="text-primary p-4">Přidat jednotku</router-link>
-    </empty-page>
+      <empty-page v-if="metrics.length === 0">
+        <p>Zatím nemáš založenou<br>žádnou počítanou jednotku.</p>
+        <router-link to="/metrics-edit/0" class="">Přidat jednotku</router-link>
+      </empty-page>
 
-    <div v-if="metrics.length" class="page-content bg-white">
-      <ul
-        v-if="metrics.length"
-        class="list-group list-group-flush border-bottom"
-      >
-        <li
-          v-for="metric in metrics"
-          v-bind:key="metric.id"
-          v-on:click="iterate(metric.id)"
-          class="list-group-item d-flex justify-content-between align-items-center"
-        >
-          <span class="vertical-top">
-            <span class="lead mt-1">{{ metric.emoji }}&ensp;</span>
-            <span class="align-text-bottom">{{ metric.name }}</span>
-          </span>
-          <span class="badge badge-primary badge-pill">{{ stats[metric.id] }}</span>
-        </li>
-      </ul>
+      <app-toolbar></app-toolbar>
     </div>
-    <app-navigation></app-navigation>
   </div>
 </template>
 
 <script>
-import AppNavigation from '../components/AppNavigation.vue'
-import AppTitlebar from '../components/AppTitlebar.vue'
+import AppToolbar from '../components/AppToolbar.vue'
+import AppNavbar from '../components/AppNavbar.vue'
 import EmptyPage from '../components/EmptyPage.vue'
 
 export default {
@@ -61,8 +45,8 @@ export default {
     }
   },
   components: {
-    AppNavigation,
-    AppTitlebar,
+    AppToolbar,
+    AppNavbar,
     EmptyPage,
   }
 }

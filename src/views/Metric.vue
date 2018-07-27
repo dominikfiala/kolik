@@ -1,10 +1,10 @@
 <template>
   <div class="page">
-    <app-titlebar>
+    <app-navbar>
       <span slot="middle">{{ metric.emoji }}&ensp;{{ metric.name }}</span>
       <router-link slot="right" v-bind:to="`/metrics-edit/${metric.id}`" tag="span" class="text-primary">Upravit</router-link>
       <router-link slot="left" to="/metrics" tag="span" class="text-primary">Jednotky</router-link>
-    </app-titlebar>
+    </app-navbar>
 
     <empty-page v-if="records.length === 0">
       <p>Tato jednotka ještě nebyla započítána.</p>
@@ -44,15 +44,15 @@
       </table>
     </div>
 
-    <app-navigation></app-navigation>
+    <app-toolbar></app-toolbar>
   </div>
 </template>
 
 <script>
 import moment from 'moment'
 
-import AppNavigation from '../components/AppNavigation.vue'
-import AppTitlebar from '../components/AppTitlebar.vue'
+import AppToolbar from '../components/AppToolbar.vue'
+import AppNavbar from '../components/AppNavbar.vue'
 import EmptyPage from '../components/EmptyPage.vue'
 
 export default {
@@ -116,8 +116,8 @@ export default {
     }
   },
   components: {
-    AppNavigation,
-    AppTitlebar,
+    AppToolbar,
+    AppNavbar,
     EmptyPage,
   }
 }

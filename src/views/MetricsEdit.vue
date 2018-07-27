@@ -1,67 +1,92 @@
 <template>
   <div class="page">
-    <app-titlebar>
-      <span v-if="id" slot="middle">Upravit jednotku</span>
-      <span v-if="!id" slot="middle">Nová jednotka</span>
-      <span slot="left" v-on:click="$router.go('-1')" class="text-primary">Zpět</span>
-      <span slot="right" v-on:click="submit" class="text-primary">Uložit</span>
-    </app-titlebar>
+    <app-navbar>
+      <span slot="title">
+        <span v-if="id === 0">Nová jednotka</span>
+        <span v-else>Upravit jednotku</span>
+      </span>
+      <a slot="left" v-on:click="$router.go('-1')">Zpět</a>
+      <a slot="right" v-on:click="submit">Uložit</a>
+    </app-navbar>
 
-    <div class="page-content bg-white p-2">
-      <form v-on:submit.prevent="submit">
-        <div class="form-group text-center">
-          <label for="presets">Vyber si z nachystaných jednotek&hellip;</label>
-          <select v-on:change="preset($event.target.value)" class="form-control" id="presets">
-            <option>Vyber jednotku</option>
-            <option
-              v-for="(preset, presetIndex) in presets"
-              v-bind:key="preset.name"
-              v-bind:value="presetIndex"
-            >
-              {{ preset.emoji }} {{ preset.name }}
-            </option>
-          </select>
-        </div>
-        <p class="text-center mb-2">&hellip;nebo si vytvoř vlastní</p>
-        <div class="form-row">
-          <div class="form-group col-3">
-            <label for="emoji">Emoji</label>
-            <input v-model="emoji" maxlength="1" class="form-control text-center" id="emoji" placeholder="❔">
-          </div>
-          <div class="form-group col-9">
-            <label for="name">Název</label>
-            <input v-model="name" class="form-control" id="name" placeholder="Vlastní jednotka">
-          </div>
-        </div>
-        <p class="text-center mb-2">Vlastnosti</p>
-        <div class="form-group">
-          <label for="period">Měřené období</label>
-          <select v-model="period" class="form-control" id="period">
-            <option value="day">Den</option>
-            <option value="week">Týden</option>
-            <option value="month">Měsíc</option>
-            <option value="quarter">Čtvrtletí</option>
-            <option value="year">Rok</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <p class="mb-2">Lokalita</p>
-          <div class="form-check form-check-inline">
-            <input v-model="location" v-bind:value="true" class="form-check-input" type="radio" name="inlineRadioOptions" id="location-on">
-            <label class="form-check-label" for="location-on">včetně lokace</label>
-          </div>
-          <div class="form-check form-check-inline">
-            <input v-model="location" v-bind:value="false" class="form-check-input" type="radio" name="inlineRadioOptions" id="location-off">
-            <label class="form-check-label" for="location-off">bez lokace</label>
-          </div>
-        </div>
+    <div class="page-content">
+      <form v-on:submit.prevent="submit" class="list">
+        <ul>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Přednastavené jednotky</div>
+                <div class="item-input-wrap">
+                  <select v-on:change="preset($event.target.value)">
+                    <option>Vyber jednotku</option>
+                    <option
+                      v-for="(preset, presetIndex) in presets"
+                      v-bind:key="preset.name"
+                      v-bind:value="presetIndex"
+                    >
+                      {{ preset.emoji }} {{ preset.name }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Název</div>
+                <div class="item-input-wrap">
+                  <input type="text" v-model="name" placeholder="Vlastní jednotka">
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Emoji</div>
+                <div class="item-input-wrap">
+                  <input type="text" v-model="emoji" maxlength="1" placeholder="❔">
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">Měřené období</div>
+                <div class="item-input-wrap">
+                  <select v-model="period">
+                    <option value="day">Den</option>
+                    <option value="week">Týden</option>
+                    <option value="month">Měsíc</option>
+                    <option value="quarter">Čtvrtletí</option>
+                    <option value="year">Rok</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title">Geolokace</div>
+                <div class="item-after">
+                  <label class="toggle toggle-init">
+                    <input type="checkbox" v-model="location" v-bind:value="true"><i class="toggle-icon"></i>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import AppTitlebar from '../components/AppTitlebar.vue'
+import AppNavbar from '../components/AppNavbar.vue'
 
 export default {
   name: 'MetricsEditPage',
@@ -125,7 +150,7 @@ export default {
     }
   },
   components: {
-    AppTitlebar,
+    AppNavbar,
   }
 }
 </script>

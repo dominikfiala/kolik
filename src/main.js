@@ -12,10 +12,14 @@ import 'framework7-icons'
 
 // viewportUnitsBuggyfill.init()
 Vue.config.productionTip = false
+moment.locale('cs')
 sync(store, router)
 
 Vue.filter('datetime', function (date) {
   return moment(date).format('ddd D. MMMM HH:mm')
+})
+Vue.filter('fromnow', function (date) {
+  return moment(date).fromNow()
 })
 Vue.filter('period', function (period) {
   if (period === 'day') return 'denně'

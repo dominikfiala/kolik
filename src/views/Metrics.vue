@@ -13,25 +13,18 @@
       </empty-page>
 
       <div v-if="metrics.length" class="page-content">
-        <ul
-          v-if="metrics.length"
-          class="list-group list-group-flush border-bottom"
-        >
-          <router-link
-            v-for="metric in metrics"
-            v-bind:to="`/metrics/${metric.id}`"
-            v-bind:key="metric.id"
-            v-on:click="iterate(metric.id)"
-            class="list-group-item d-flex justify-content-between align-items-center no-color"
-            tag="span"
-          >
-            <span class="vertical-top">
-              <span class="lead mt-1">{{ metric.emoji }}&ensp;</span>
-              <span class="align-text-bottom">{{ metric.name }}</span>
-            </span>
-            <i class="icon ion-ios-arrow-forward"></i>
-          </router-link>
-        </ul>
+        <div class="list">
+          <ul v-for="metric in metrics"  v-bind:key="metric.id">
+            <li>
+              <router-link v-bind:to="`/metrics/${metric.id}`" class="item-link">
+                <div class="item-content">
+                  <div class="item-media">{{ metric.emoji }}</div>
+                  <div class="item-inner">{{ metric.name }}</div>
+                </div>
+              </router-link>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <app-toolbar></app-toolbar>

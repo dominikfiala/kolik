@@ -1,47 +1,79 @@
 <template>
-  <div class="page">
+  <div class="page page-with-subnavbar">
     <app-navbar>
-      <span slot="middle">{{ metric.emoji }}&ensp;{{ metric.name }}</span>
-      <router-link slot="right" v-bind:to="`/metrics-edit/${metric.id}`" tag="span" class="text-primary">Upravit</router-link>
-      <router-link slot="left" to="/metrics" tag="span" class="text-primary">Jednotky</router-link>
+      <span slot="title">{{ metric.emoji }}&ensp;{{ metric.name }}</span>
+      <router-link slot="left" to="/metrics">Jednotky</router-link>
+      <router-link slot="right" v-bind:to="`/metrics-edit/${metric.id}`">Upravit</router-link>
     </app-navbar>
 
-    <empty-page v-if="records.length === 0">
-      <p>Tato jednotka ještě nebyla započítána.</p>
-      <span href="#" v-on:click="$store.commit('iterate', id)" class="p-4 text-primary">Započítat jednotku</span>
-    </empty-page>
+    <div class="subnavbar">
+      <div class="subnavbar-inner">
+        <div class="segmented">
+          <a v-on:click.prevent="showTab" href="#stats" class="button">Statistiky</a>
+          <a v-on:click.prevent="showTab" href="#details" class="button button-active" >Detaily</a>
+        </div>
+      </div>
+    </div>
 
-    <div v-if="records.length" class="page-content bg-white">
-      <table class="table">
-        <tr>
-          <td>Celkem záznamů</td>
-          <td class="text-right">{{ stats.total }}</td>
-        </tr>
-        <tr>
-          <td>Průměr</td>
-          <td class="text-right">{{ stats.avarage }} {{ metric.period|period }}</td>
-        </tr>
-        <tr>
-          <td>Počítaných dní</td>
-          <td class="text-right">{{ stats.days }}</td>
-        </tr>
-        <tr>
-          <td>Poslední záznam</td>
-          <td class="text-right">{{ stats.last.time|datetime }}</td>
-        </tr>
-        <tr>
-          <td>První záznam</td>
-          <td class="text-right">{{ stats.first.time|datetime }}</td>
-        </tr>
-        <tr>
-          <td>
-            <span v-on:click="reset" href="#" class="text-danger">Vynulovat jednotku</span>
-          </td>
-          <td class="text-right">
-            <span v-on:click="deleteMetric" class="text-danger">Smazat jednotku</span>
-          </td>
-        </tr>
-      </table>
+    <div class="page-content">
+      <div class="tabs">
+        <div id="stats" class="tab">
+          <div class="data-table card">
+            <table>
+              <tbody>
+                <tr>
+                  <td>Celkem záznamů</td>
+                  <td class="text-align-right">{{ stats.total }}</td>
+                </tr>
+                <tr>
+                  <td>Průměr</td>
+                  <td class="text-align-right">{{ stats.avarage }} {{ metric.period|period }}</td>
+                </tr>
+                <tr>
+                  <td>Počítaných dní</td>
+                  <td class="text-align-right">{{ stats.days }}</td>
+                </tr>
+                <tr>
+                  <td>Geolokace</td>
+                  <td class="text-align-right">{{ metric.location ? 'zapnuto' : 'vypnuto' }}</td>
+                </tr>
+                <tr>
+                  <td>Poslední záznam</td>
+                  <td class="text-aling-right">{{ stats.latest|datetime }}</td>
+                </tr>
+                <tr>
+                  <td>První záznam</td>
+                  <td class="text-aling-right">{{ stats.oldest|datetime }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div id="details" class="tab tab-active">
+          <div class="data-table card">
+            <table>
+              <tbody>
+                <tr>
+                  <td>Název</td>
+                  <td class="text-align-right">{{ metric.name }}</td>
+                </tr>
+                <tr>
+                  <td>Emoji</td>
+                  <td class="text-align-right">{{ metric.emoji }}</td>
+                </tr>
+                <tr>
+                  <td>Měřené období</td>
+                  <td class="text-align-right">{{ metric.period|period }}</td>
+                </tr>
+                <tr>
+                  <td>Geolokace</td>
+                  <td class="text-align-right">{{ metric.location ? 'zapnuto' : 'vypnuto' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
 
     <app-toolbar></app-toolbar>
@@ -68,6 +100,13 @@ export default {
         this.$store.commit('deleteMetric', this.id)
         this.$router.push('/metrics')
       }
+    },
+    showTab(event) {
+      const href = event.target.getAttribute('href')
+      window.f7.$('.subnavbar .button').removeClass('button-active')
+      window.f7.$('.tabs .tab').removeClass('tab-active')
+      window.f7.$(`[href="${href}"]`).addClass('button-active')
+      window.f7.$(href).addClass('tab-active')
     }
   },
   computed: {
@@ -78,35 +117,42 @@ export default {
       return this.$store.state.metrics.find(item => item.id === this.id)
     },
     records() {
-      return this.$store.state.records.filter(item => item.metric === this.id)
+      return this.$store.state.records
     },
     stats() {
-      var total = this.records.length
+      const stats = {
+        total: 0,
+        oldest: null,
+        latest: null,
+        days: 0,
+        avarage: 0,
+      }
 
-      var first = this.records[total - 1]
-      var firstMoment = new moment(first.time)
+      this.$store.state.records
+        .filter(item => item.metric === this.id)
+        .map(record => {
+          stats.total++
+          if (record.time > stats.latest || !stats.latest) {
+            stats.latest = record.time
+          }
+          if (record.time < stats.oldest || !stats.oldest) {
+            stats.oldest = record.time
+          }
+        })
 
-      var last = this.records[0]
+      const firstMoment = new moment(stats.oldest)
+      const diff = moment.duration(firstMoment.diff())
+      stats.days = diff.get('days') === 0 ? 1 : diff.get('days')
 
-      var diff = moment.duration(firstMoment.diff())
-
-      var days = diff.get('days') === 0 ? 1 : diff.get('days')
-
-      var avarageRatio = days
+      let avarageRatio = 0
       if (this.metric.period === 'day') avarageRatio = 1
       else if (this.metric.period === 'week') avarageRatio = 7
       else if (this.metric.period === 'month') avarageRatio = 30
       else if (this.metric.period === 'quarter') avarageRatio = 91
       else if (this.metric.period === 'year') avarageRatio = 365
-      var avarage = Math.round(total / avarageRatio * 10) / 10
+      stats.avarage = Math.round(stats.total / avarageRatio * 10) / 10
 
-      return {
-        total: total,
-        first: first,
-        last: last,
-        days: days,
-        avarage: avarage,
-      }
+      return stats
     }
   },
   created() {

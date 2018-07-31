@@ -11,12 +11,18 @@ import 'framework7/css/framework7.css'
 import 'framework7-icons'
 
 // viewportUnitsBuggyfill.init()
-Vue.config.productionTip = false
 moment.locale('cs')
 sync(store, router)
 
+Vue.config.productionTip = false
 Vue.filter('datetime', function (date) {
   return moment(date).format('ddd D. MMMM HH:mm')
+})
+Vue.filter('time', function (date) {
+  return moment(date).format('HH:mm')
+})
+Vue.filter('date', function (date) {
+  return moment(date).format('D. MMM')
 })
 Vue.filter('fromnow', function (date) {
   return moment(date).fromNow()

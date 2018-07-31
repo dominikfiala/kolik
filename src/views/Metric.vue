@@ -9,68 +9,108 @@
     <div class="subnavbar">
       <div class="subnavbar-inner">
         <div class="segmented">
-          <a v-on:click.prevent="showTab" href="#stats" class="button">Statistiky</a>
-          <a v-on:click.prevent="showTab" href="#details" class="button button-active" >Detaily</a>
+          <a v-on:click.prevent="showTab" href="#stats" class="button button-active">Statistiky</a>
+          <a v-on:click.prevent="showTab" href="#details" class="button" >Detaily</a>
         </div>
       </div>
     </div>
 
     <div class="page-content">
       <div class="tabs">
-        <div id="stats" class="tab">
-          <div class="data-table card">
-            <table>
-              <tbody>
-                <tr>
-                  <td>Celkem záznamů</td>
-                  <td class="text-align-right">{{ stats.total }}</td>
-                </tr>
-                <tr>
-                  <td>Průměr</td>
-                  <td class="text-align-right">{{ stats.avarage }} {{ metric.period|period }}</td>
-                </tr>
-                <tr>
-                  <td>Počítaných dní</td>
-                  <td class="text-align-right">{{ stats.days }}</td>
-                </tr>
-                <tr>
-                  <td>Geolokace</td>
-                  <td class="text-align-right">{{ metric.location ? 'zapnuto' : 'vypnuto' }}</td>
-                </tr>
-                <tr>
-                  <td>Poslední záznam</td>
-                  <td class="text-aling-right">{{ stats.latest|datetime }}</td>
-                </tr>
-                <tr>
-                  <td>První záznam</td>
-                  <td class="text-aling-right">{{ stats.oldest|datetime }}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div id="stats" class="tab tab-active">
+          <div class="list">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Celkem záznamů</div>
+                    <div class="item-after text-color-black">
+                      {{ stats.total }}
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Průměr</div>
+                    <div class="item-after text-color-black">
+                      {{ stats.avarage }} {{ metric.period|period }}
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Nejnovější</div>
+                    <div class="item-after text-color-black">
+                      <span v-if="stats.latest">{{ stats.latest|datetime }}</span>
+                      <span v-else>&mdash;</span>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Nejstarší</div>
+                    <div class="item-after text-color-black">
+                      <span v-if="stats.oldest">{{ stats.oldest|datetime }}</span>
+                      <span v-else>&mdash;</span>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Měřených dní</div>
+                    <div class="item-after text-color-black">
+                      {{ stats.days }}
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
-        <div id="details" class="tab tab-active">
-          <div class="data-table card">
-            <table>
-              <tbody>
-                <tr>
-                  <td>Název</td>
-                  <td class="text-align-right">{{ metric.name }}</td>
-                </tr>
-                <tr>
-                  <td>Emoji</td>
-                  <td class="text-align-right">{{ metric.emoji }}</td>
-                </tr>
-                <tr>
-                  <td>Měřené období</td>
-                  <td class="text-align-right">{{ metric.period|period }}</td>
-                </tr>
-                <tr>
-                  <td>Geolokace</td>
-                  <td class="text-align-right">{{ metric.location ? 'zapnuto' : 'vypnuto' }}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div id="details" class="tab">
+          <div class="list">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Název</div>
+                    <div class="item-after text-color-black">{{ metric.name }}</div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Emoji</div>
+                    <div class="item-after text-color-black">{{ metric.emoji }}</div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Měřené období</div>
+                    <div class="item-after text-color-black">{{ metric.period|period }}</div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Geolokace</div>
+                    <div class="item-after text-color-black">{{ metric.location ? 'zapnuto' : 'vypnuto' }}</div>
+                  </div>
+                </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>
@@ -140,9 +180,11 @@ export default {
           }
         })
 
-      const firstMoment = new moment(stats.oldest)
-      const diff = moment.duration(firstMoment.diff())
-      stats.days = diff.get('days') === 0 ? 1 : diff.get('days')
+      if (stats.oldest) {
+        const firstMoment = new moment(stats.oldest)
+        const diff = moment.duration(firstMoment.diff())
+        stats.days = diff.get('days') === 0 ? 1 : diff.get('days')
+      }
 
       let avarageRatio = 0
       if (this.metric.period === 'day') avarageRatio = 1

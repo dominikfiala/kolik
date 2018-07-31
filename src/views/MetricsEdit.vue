@@ -81,6 +81,25 @@
           </li>
         </ul>
       </form>
+
+      <div v-if="id !== 0" class="list">
+        <ul>
+          <li v-on:click="reset">
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title text-color-red">Vynulovat jednotku</div>
+              </div>
+            </div>
+          </li>
+          <li v-on:click="remove">
+            <div class="item-content">
+              <div class="item-inner">
+                <div class="item-title text-color-red">Smazat jednotku</div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </template>
@@ -138,7 +157,18 @@ export default {
         location: this.location,
       })
       this.$router.go('-1')
-    }
+    },
+    reset() {
+      if (window.confirm('Opravdu vynulovat tuto jednotku?')) {
+        this.$store.commit('resetMetric', this.id)
+      }
+    },
+    remove() {
+      if (window.confirm('Opravdu smazat tuto jednotku? Smazány budou i veškeré její záznamy.')) {
+        this.$store.commit('deleteMetric', this.id)
+        this.$router.push('/metrics')
+      }
+    },
   },
   created() {
     var metric = this.$store.state.metrics.find(item => item.id === this.id)

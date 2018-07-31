@@ -5,6 +5,7 @@ import HomePage from './../views/Home.vue'
 import MetricsPage from './../views/Metrics.vue'
 import MetricPage from './../views/Metric.vue'
 import MetricsEditPage from './../views/MetricsEdit.vue'
+import TimelinePage from './../views/Timeline.vue'
 
 Vue.use(Router)
 
@@ -18,6 +19,16 @@ export default new Router({
       meta: {
         base: '/',
         icon: 'ion-md-add'
+      }
+    },
+    {
+      path: '/timeline',
+      name: 'timeline',
+      title: 'Časová osa',
+      component: TimelinePage,
+      meta: {
+        base: '/timeline',
+        icon: 'ion-ios-list'
       }
     },
     {

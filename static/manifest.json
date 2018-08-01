@@ -3,12 +3,12 @@
   "short_name": "Kolik",
   "icons": [
     {
-      "src": "/kolik/app/static/img/icons/pwa-icon.png",
+      "src": "/kolik/app/static/img/icons/pwa-icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/kolik/app/static/img/icons/pwa-icon-large.png",
+      "src": "/kolik/app/static/img/icons/pwa-icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

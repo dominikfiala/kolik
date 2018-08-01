@@ -2,14 +2,17 @@
   <div class="page page-with-subnavbar">
     <app-navbar>
       <span slot="title">{{ metric.emoji }}&ensp;{{ metric.name }}</span>
-      <router-link slot="left" to="/metrics">Jednotky</router-link>
+      <router-link slot="left" to="/metrics">Zpět</router-link>
       <router-link slot="right" v-bind:to="`/metrics-edit/${metric.id}`">Upravit</router-link>
     </app-navbar>
+
+    <app-toolbar></app-toolbar>
 
     <div class="subnavbar">
       <div class="subnavbar-inner">
         <div class="segmented">
           <a v-on:click.prevent="showTab" href="#stats" class="button button-active">Statistiky</a>
+          <a v-on:click.prevent="showTab" href="#records" class="button" >Záznamy</a>
           <a v-on:click.prevent="showTab" href="#details" class="button" >Detaily</a>
         </div>
       </div>
@@ -75,6 +78,20 @@
             </ul>
           </div>
         </div>
+        <div id="records" class="tab">
+          <div class="list">
+            <ul>
+              <li v-for="record in records" v-bind:key="record.time">
+                <router-link v-bind:to="`/records-edit/${record.time}`" class="item-content item-link">
+                  <div class="item-inner">
+                    <div class="item-title">{{ record.time|datetime }}</div>
+                    <!-- <div class="item-after text-color-black">{{ metric.name|trim }}</div> -->
+                  </div>
+                </router-link>
+              </li>
+            </ul>
+          </div>
+        </div>
         <div id="details" class="tab">
           <div class="list">
             <ul>
@@ -82,7 +99,7 @@
                 <div class="item-content">
                   <div class="item-inner">
                     <div class="item-title">Název</div>
-                    <div class="item-after text-color-black">{{ metric.name }}</div>
+                    <div class="item-after text-color-black">{{ metric.name|trim }}</div>
                   </div>
                 </div>
               </li>
@@ -102,21 +119,19 @@
                   </div>
                 </div>
               </li>
-              <li>
+              <!-- <li>
                 <div class="item-content">
                   <div class="item-inner">
                     <div class="item-title">Geolokace</div>
                     <div class="item-after text-color-black">{{ metric.location ? 'zapnuto' : 'vypnuto' }}</div>
                   </div>
                 </div>
-              </li>
+              </li> -->
             </ul>
           </div>
         </div>
       </div>
     </div>
-
-    <app-toolbar></app-toolbar>
   </div>
 </template>
 
@@ -158,6 +173,9 @@ export default {
     },
     records() {
       return this.$store.state.records
+        .slice(0)
+        .filter(item => item.metric === this.id)
+        .sort((a, b) => b.time - a.time)
     },
     stats() {
       const stats = {
@@ -183,7 +201,9 @@ export default {
       if (stats.oldest) {
         const firstMoment = new moment(stats.oldest)
         const diff = moment.duration(firstMoment.diff())
-        stats.days = diff.get('days') === 0 ? 1 : diff.get('days')
+        stats.days = diff.get('days') === 0
+          ? 1
+          : Math.abs(diff.get('days'))
       }
 
       let avarageRatio = 0

@@ -21,10 +21,11 @@
           window.f7.navbar.size('.navbar')
         })
       }
+    },
+    mounted() {
+      this.$nextTick(() => {
+        window.f7.navbar.size('.navbar')
+      })
     }
   }
 </script>
-
-<style lang="scss">
-
-</style>

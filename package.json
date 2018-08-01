@@ -8,7 +8,8 @@
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
-    "lint": "eslint --ext .js,.vue src"
+    "lint": "eslint --ext .js,.vue src",
+    "screenshots": "node build/screenshots.js"
   },
   "dependencies": {
     "framework7": "^3.0.7",
@@ -69,7 +70,8 @@
     "webpack-bundle-analyzer": "^2.9.0",
     "webpack-dev-middleware": "^1.12.0",
     "webpack-hot-middleware": "^2.19.1",
-    "webpack-merge": "^4.1.0"
+    "webpack-merge": "^4.1.0",
+    "webshot-cli": "^0.3.1"
   },
   "engines": {
     "node": ">= 4.0.0",

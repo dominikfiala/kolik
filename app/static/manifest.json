@@ -1,20 +1,20 @@
 {
-  "name": "kolik",
+  "name": "Kolik",
   "short_name": "Kolik",
   "icons": [
     {
-      "src": "/static/img/icons/android-chrome-192x192.png",
+      "src": "/kolik/app/static/img/icons/pwa-icon.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/static/img/icons/android-chrome-512x512.png",
+      "src": "/kolik/app/static/img/icons/pwa-icon-large.png",
       "sizes": "512x512",
       "type": "image/png"
     }
   ],
-  "start_url": "/index.html",
+  "start_url": "/kolik/app/index.html",
   "display": "standalone",
   "background_color": "#000000",
-  "theme_color": "#4DBA87"
+  "theme_color": "#f98712"
 }

@@ -6,12 +6,14 @@
         <span slot="title">Časová osa</span>
       </app-navbar>
 
+      <app-toolbar></app-toolbar>
+
       <empty-page v-if="recordsByDay.length === 0">
         <p>Zatím nemáš záznam<br>žádné počítané jednotky.</p>
       </empty-page>
 
       <div v-if="recordsByDay.length" class="page-content">
-        <div class="timeline">
+        <div class="timeline margin-bottom">
           <div v-for="dayGroup in recordsByDay" v-bind:key="dayGroup.day" class="timeline-item">
             <div class="timeline-item-date">{{ dayGroup.day|date }}</div>
             <div class="timeline-item-divider"></div>
@@ -24,8 +26,6 @@
           </div>
         </div>
       </div>
-
-      <app-toolbar></app-toolbar>
     </div>
   </div>
 </template>
@@ -51,7 +51,7 @@ export default {
 
       this.$store.state.records
         .slice(0)
-        .sort((a, b) => a - b)
+        .sort((a, b) => b.time - a.time)
         .map(record => {
           let day = parseInt(new moment(record.time).startOf('day').format('x'))
           let item = {
@@ -70,6 +70,10 @@ export default {
             })
           }
         })
+
+      output.map(group => {
+        group.items.sort((a, b) => b.time - a.time)
+      })
 
       return output
     }

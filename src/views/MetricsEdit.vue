@@ -5,12 +5,12 @@
         <span v-if="id === 0">Nová jednotka</span>
         <span v-else>Upravit jednotku</span>
       </span>
-      <a slot="left" v-on:click="$router.go('-1')">Zpět</a>
+      <a slot="left" v-on:click="$router.go('-1')">Zrušit</a>
       <a slot="right" v-on:click="submit">Uložit</a>
     </app-navbar>
 
     <div class="page-content">
-      <form v-on:submit.prevent="submit" class="list">
+      <form v-on:submit.prevent="submit" class="list" ref="form">
         <ul>
           <li>
             <div class="item-content item-input">
@@ -36,7 +36,7 @@
               <div class="item-inner">
                 <div class="item-title item-label">Název</div>
                 <div class="item-input-wrap">
-                  <input type="text" v-model="name" placeholder="Vlastní jednotka">
+                  <input type="text" v-model="name" placeholder="Vlastní jednotka" required>
                 </div>
               </div>
             </div>
@@ -46,7 +46,7 @@
               <div class="item-inner">
                 <div class="item-title item-label">Emoji</div>
                 <div class="item-input-wrap">
-                  <input type="text" v-model="emoji" maxlength="1" placeholder="❔">
+                  <input type="text" v-model="emoji" maxlength="1" placeholder="❔" required>
                 </div>
               </div>
             </div>
@@ -67,7 +67,7 @@
               </div>
             </div>
           </li>
-          <li>
+          <!-- <li>
             <div class="item-content">
               <div class="item-inner">
                 <div class="item-title">Geolokace</div>
@@ -78,7 +78,7 @@
                 </div>
               </div>
             </div>
-          </li>
+          </li> -->
         </ul>
       </form>
 
@@ -122,7 +122,7 @@ export default {
       ],
       name: '',
       emoji: '',
-      location: true,
+      // location: true,
       period: 'day',
     }
   },
@@ -144,8 +144,7 @@ export default {
       }
     },
     submit() {
-      if (!this.name || !this.emoji) {
-        window.alert('Musíš zadat alespoň název a emoji jednotky')
+      if (this.$refs.form.reportValidity && !this.$refs.form.reportValidity()) {
         return
       }
 
@@ -154,7 +153,7 @@ export default {
         emoji: this.emoji,
         name: this.name,
         period: this.period,
-        location: this.location,
+        // location: this.location,
       })
       this.$router.go('-1')
     },
@@ -176,7 +175,7 @@ export default {
       this.emoji = metric.emoji
       this.name = metric.name
       this.period = metric.period
-      this.location = metric.location
+      // this.location = metric.location
     }
   },
   components: {

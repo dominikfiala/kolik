@@ -4,8 +4,10 @@
     <div class="page">
       <app-navbar>
         <span slot="title">Jednotky</span>
-        <router-link slot="right" to="/metrics-edit/0">Nová</router-link>
+        <router-link slot="right" to="/metrics-edit/0">Přidat</router-link>
       </app-navbar>
+
+      <app-toolbar></app-toolbar>
 
       <empty-page v-if="metrics.length === 0">
         <p>Zatím nemáš založenou<br>žádnou počítanou jednotku.</p>
@@ -13,6 +15,9 @@
       </empty-page>
 
       <div v-if="metrics.length" class="page-content">
+        <div class="block-title">
+          Zobraz si více voleb klepnutím
+        </div>
         <div class="list">
           <ul v-for="metric in metrics"  v-bind:key="metric.id">
             <li>
@@ -26,8 +31,6 @@
           </ul>
         </div>
       </div>
-
-      <app-toolbar></app-toolbar>
     </div>
   </div>
 </template>
@@ -61,21 +64,3 @@ export default {
   }
 }
 </script>
-
-<style media="screen">
-  .empty {
-    display: flex;
-    height: 100%;
-    align-items: center;
-    justify-content: center;
-  }
-  select {
-    height: 35px;
-    background-color: #fff;
-    padding-top: 0;
-    padding-bottom: 0;
-  }
-  .metric-icon {
-    transform: scale(1.25)
-  }
-</style>

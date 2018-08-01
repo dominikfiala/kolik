@@ -33,29 +33,43 @@ export default new Vuex.Store({
       var record = {
         metric: metricId,
         time: Date.now(),
-        location: null
+        // location: null
       }
+      state.records.push(record)
 
-      var metric = state.metrics.find(item => item.id === metricId)
-      if (metric.location && 'geolocation' in navigator) {
-        navigator.geolocation.getCurrentPosition(
-          location => {
-            record.location = {
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
-            }
-            state.records.push(record)
-          },
-          error => {
-            console.error(error)
-            state.records.push(record)
-          }
-        )
+      // var metric = state.metrics.find(item => item.id === metricId)
+      // if (metric.location && 'geolocation' in navigator) {
+      //   navigator.geolocation.getCurrentPosition(
+      //     location => {
+      //       record.location = {
+      //         latitude: location.coords.latitude,
+      //         longitude: location.coords.longitude,
+      //       }
+      //       state.records.push(record)
+      //     },
+      //     error => {
+      //       console.error(error)
+      //       state.records.push(record)
+      //     }
+      //   )
+      // }
+      // else {
+      //   state.records.push(record)
+      // }
+    },
+    saveRecord(state, record) {
+      if (record.id) {
+        var index = state.records.findIndex(item => item.time === record.id)
+        Vue.set(state.records, index, record)
       }
       else {
         state.records.push(record)
       }
-    }
+    },
+
+    deleteRecord(state, recordId) {
+      state.records = state.records.filter(item => item.time !== recordId)
+    },
   },
   plugins: [createPersistedState()]
 })

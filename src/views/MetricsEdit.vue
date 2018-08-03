@@ -1,18 +1,18 @@
 <template>
   <div class="page">
     <app-navbar>
-      <span slot="title">
-        <span v-if="id === 0">Nová jednotka</span>
-        <span v-else>Upravit jednotku</span>
-      </span>
-      <a slot="left" v-on:click="$router.go('-1')">Zrušit</a>
-      <a slot="right" v-on:click="submit">Uložit</a>
+      <a slot="left" v-on:click="$router.go('-1')" class="link">Zrušit</a>
+      <a slot="right" v-on:click="submit" class="link">Uložit</a>
     </app-navbar>
 
     <div class="page-content">
+      <div class="block-title">
+        <span v-if="id === 0">Nová jednotka</span>
+        <span v-else>Upravit jednotku</span>
+      </div>
       <form v-on:submit.prevent="submit" class="list" ref="form">
         <ul>
-          <li>
+          <li v-if="id === 0">
             <div class="item-content item-input">
               <div class="item-inner">
                 <div class="item-title item-label">Přednastavené jednotky</div>
@@ -67,38 +67,29 @@
               </div>
             </div>
           </li>
-          <!-- <li>
-            <div class="item-content">
-              <div class="item-inner">
-                <div class="item-title">Geolokace</div>
-                <div class="item-after">
-                  <label class="toggle toggle-init">
-                    <input type="checkbox" v-model="location" v-bind:value="true"><i class="toggle-icon"></i>
-                  </label>
-                </div>
-              </div>
-            </div>
-          </li> -->
         </ul>
       </form>
 
-      <div v-if="id !== 0" class="list">
-        <ul>
-          <li v-on:click="reset">
-            <div class="item-content">
-              <div class="item-inner">
-                <div class="item-title text-color-red">Vynulovat jednotku</div>
+      <div v-if="id !== 0" class="">
+        <div class="block-title">Další volby</div>
+        <div class="list">
+          <ul>
+            <li v-on:click="reset">
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title text-color-red">Vynulovat jednotku</div>
+                </div>
               </div>
-            </div>
-          </li>
-          <li v-on:click="remove">
-            <div class="item-content">
-              <div class="item-inner">
-                <div class="item-title text-color-red">Smazat jednotku</div>
+            </li>
+            <li v-on:click="remove">
+              <div class="item-content">
+                <div class="item-inner">
+                  <div class="item-title text-color-red">Smazat jednotku</div>
+                </div>
               </div>
-            </div>
-          </li>
-        </ul>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -122,7 +113,6 @@ export default {
       ],
       name: '',
       emoji: '',
-      // location: true,
       period: 'day',
     }
   },
@@ -148,34 +138,33 @@ export default {
         return
       }
 
-      this.$store.commit('saveMetric', {
+      this.$store.commit('metrics/SAVE', {
         id: this.id,
         emoji: this.emoji,
         name: this.name,
         period: this.period,
-        // location: this.location,
       })
       this.$router.go('-1')
     },
     reset() {
       if (window.confirm('Opravdu vynulovat tuto jednotku?')) {
-        this.$store.commit('resetMetric', this.id)
+        this.$store.commit('records/RESET', this.id)
       }
     },
     remove() {
       if (window.confirm('Opravdu smazat tuto jednotku? Smazány budou i veškeré její záznamy.')) {
-        this.$store.commit('deleteMetric', this.id)
+        this.$store.commit('records/RESET', this.id)
+        this.$store.commit('metrics/DELETE', this.id)
         this.$router.push('/metrics')
       }
     },
   },
   created() {
-    var metric = this.$store.state.metrics.find(item => item.id === this.id)
+    var metric = this.$store.state.metrics.metrics.find(item => item.id === this.id)
     if (metric) {
       this.emoji = metric.emoji
       this.name = metric.name
       this.period = metric.period
-      // this.location = metric.location
     }
   },
   components: {

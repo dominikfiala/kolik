@@ -2,8 +2,7 @@
   <div class="view">
     <div class="page">
       <app-navbar>
-        <span slot="title">Nový záznam</span>
-        <router-link v-if="metrics.length" slot="right" to="/records-edit/0">Přidat</router-link>
+        <router-link v-if="metrics.length" slot="right" to="/records-edit/0" class="link">Přidat zpětně</router-link>
       </app-navbar>
 
       <app-toolbar></app-toolbar>
@@ -63,7 +62,7 @@ export default {
   name: 'HomePage',
   computed: {
     metrics() {
-      const metrics = this.$store.state.metrics.reduce((accumulator, metric) => {
+      const metrics = this.$store.state.metrics.metrics.reduce((accumulator, metric) => {
         accumulator[metric.id] = {
           metric: metric,
           stats: {
@@ -74,14 +73,14 @@ export default {
         return accumulator
       }, {})
 
-      this.$store.state.records.map(record => {
+      this.$store.state.records.records.map(record => {
         let metric = metrics[record.metric]
         let recordMoment = new moment(record.time)
         let metricStart = new moment().startOf(metric.metric.period)
         if (recordMoment.isAfter(metricStart)) {
           let stats = metric.stats
           stats.total++
-          if (record.time > stats.latest || !stats.latest) {
+          if (!stats.latest) {
             stats.latest = record.time
           }
         }
@@ -92,7 +91,10 @@ export default {
   },
   methods: {
     iterate(metricId) {
-      this.$store.commit('iterate', metricId)
+      this.$store.commit('records/SAVE', {
+        metric: metricId,
+        time: Date.now()
+      })
     }
   },
   components: {

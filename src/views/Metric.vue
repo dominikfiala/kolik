@@ -1,26 +1,26 @@
 <template>
   <div class="page page-with-subnavbar">
     <app-navbar>
-      <span slot="title">{{ metric.emoji }}&ensp;{{ metric.name }}</span>
-      <router-link slot="left" to="/metrics">Zpět</router-link>
-      <router-link slot="right" v-bind:to="`/metrics-edit/${metric.id}`">Upravit</router-link>
+      <router-link slot="left" to="/metrics" class="link">Zpět</router-link>
+      <router-link slot="right" v-bind:to="`/metrics-edit/${metric.id}`" class="link">Upravit</router-link>
     </app-navbar>
-
-    <app-toolbar></app-toolbar>
 
     <div class="subnavbar">
       <div class="subnavbar-inner">
         <div class="segmented">
-          <a v-on:click.prevent="showTab" href="#stats" class="button button-active">Statistiky</a>
-          <a v-on:click.prevent="showTab" href="#records" class="button" >Záznamy</a>
-          <a v-on:click.prevent="showTab" href="#details" class="button" >Detaily</a>
+          <a v-on:click.prevent="showTab" href="#stats" class="button tab-link tab-link-active">Statistiky</a>
+          <a v-on:click.prevent="showTab" href="#records" class="button tab-link">Záznamy</a>
+          <a v-on:click.prevent="showTab" href="#details" class="button tab-link">Detaily</a>
         </div>
       </div>
     </div>
 
+    <app-toolbar></app-toolbar>
+
     <div class="page-content">
       <div class="tabs">
         <div id="stats" class="tab tab-active">
+          <div class="block-title">{{ metric.emoji }}&ensp;{{ metric.name }} / Statistiky</div>
           <div class="list">
             <ul>
               <li>
@@ -79,6 +79,7 @@
           </div>
         </div>
         <div id="records" class="tab">
+          <div class="block-title">{{ metric.emoji }}&ensp;{{ metric.name }} / Záznamy</div>
           <div class="list">
             <ul>
               <li v-for="record in records" v-bind:key="record.time">
@@ -93,6 +94,7 @@
           </div>
         </div>
         <div id="details" class="tab">
+          <div class="block-title">{{ metric.emoji }}&ensp;{{ metric.name }} / Detaily</div>
           <div class="list">
             <ul>
               <li>
@@ -119,14 +121,6 @@
                   </div>
                 </div>
               </li>
-              <!-- <li>
-                <div class="item-content">
-                  <div class="item-inner">
-                    <div class="item-title">Geolokace</div>
-                    <div class="item-after text-color-black">{{ metric.location ? 'zapnuto' : 'vypnuto' }}</div>
-                  </div>
-                </div>
-              </li> -->
             </ul>
           </div>
         </div>
@@ -145,23 +139,8 @@ import EmptyPage from '../components/EmptyPage.vue'
 export default {
   name: 'MetricPage',
   methods: {
-    reset() {
-      if (window.confirm('Opravdu vynulovat tuto jednotku?')) {
-        this.$store.commit('resetMetric', this.id)
-      }
-    },
-    deleteMetric() {
-      if (window.confirm('Opravdu smazat tuto jednotku? Smazány budou i veškeré její záznamy.')) {
-        this.$store.commit('deleteMetric', this.id)
-        this.$router.push('/metrics')
-      }
-    },
     showTab(event) {
-      const href = event.target.getAttribute('href')
-      window.f7.$('.subnavbar .button').removeClass('button-active')
-      window.f7.$('.tabs .tab').removeClass('tab-active')
-      window.f7.$(`[href="${href}"]`).addClass('button-active')
-      window.f7.$(href).addClass('tab-active')
+      window.f7.tab.show(event.target.getAttribute('href'), event.target)
     }
   },
   computed: {
@@ -169,34 +148,21 @@ export default {
       return parseInt(this.$route.params.id)
     },
     metric() {
-      return this.$store.state.metrics.find(item => item.id === this.id)
+      return this.$store.state.metrics.metrics
+        .find(item => item.id === this.id)
     },
     records() {
-      return this.$store.state.records
-        .slice(0)
+      return this.$store.state.records.records
         .filter(item => item.metric === this.id)
-        .sort((a, b) => b.time - a.time)
     },
     stats() {
       const stats = {
-        total: 0,
-        oldest: null,
-        latest: null,
+        total: this.records.length,
+        oldest: this.records[this.records.length - 1].time,
+        latest: this.records[0].time,
         days: 0,
         avarage: 0,
       }
-
-      this.$store.state.records
-        .filter(item => item.metric === this.id)
-        .map(record => {
-          stats.total++
-          if (record.time > stats.latest || !stats.latest) {
-            stats.latest = record.time
-          }
-          if (record.time < stats.oldest || !stats.oldest) {
-            stats.oldest = record.time
-          }
-        })
 
       if (stats.oldest) {
         const firstMoment = new moment(stats.oldest)
@@ -230,7 +196,3 @@ export default {
   }
 }
 </script>
-
-<style media="screen">
-
-</style>

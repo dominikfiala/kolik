@@ -2,9 +2,9 @@
   <div class="view">
     <!-- Initial Page, "data-name" contains page name -->
     <div class="page">
-      <app-navbar>
+      <!-- <app-navbar>
         <span slot="title">Časová osa</span>
-      </app-navbar>
+      </app-navbar> -->
 
       <app-toolbar></app-toolbar>
 
@@ -43,15 +43,13 @@ export default {
     recordsByDay() {
       const output = []
 
-      const metricNames = this.$store.state.metrics
+      const metricNames = this.$store.state.metrics.metrics
         .reduce((accumulator, metric) => {
           accumulator[metric.id] = `${metric.emoji} ${metric.name}`
           return accumulator
         }, {})
 
-      this.$store.state.records
-        .slice(0)
-        .sort((a, b) => b.time - a.time)
+      this.$store.state.records.records
         .map(record => {
           let day = parseInt(new moment(record.time).startOf('day').format('x'))
           let item = {
@@ -70,10 +68,6 @@ export default {
             })
           }
         })
-
-      output.map(group => {
-        group.items.sort((a, b) => b.time - a.time)
-      })
 
       return output
     }

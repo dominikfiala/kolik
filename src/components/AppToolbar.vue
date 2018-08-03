@@ -1,5 +1,5 @@
 <template>
-  <div class="toolbar tabbar tabbar-labels">
+  <div class="toolbar tabbar tabbar-labels toolbar-bottom-md">
     <div class="toolbar-inner">
       <router-link
         v-for="route in routes"

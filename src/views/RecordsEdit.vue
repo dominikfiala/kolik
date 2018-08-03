@@ -1,15 +1,15 @@
 <template>
   <div class="page">
     <app-navbar>
-      <span slot="title">
-        <span v-if="id === 0">Nový záznam</span>
-        <span v-else>Upravit záznam</span>
-      </span>
-      <a slot="left" v-on:click="$router.go('-1')">Zrušit</a>
-      <a slot="right" v-on:click="submit">Uložit</a>
+      <a slot="left" v-on:click="$router.go('-1')" class="link">Zrušit</a>
+      <a slot="right" v-on:click="submit" class="link">Uložit</a>
     </app-navbar>
 
     <div class="page-content">
+      <div class="block-title">
+        <span v-if="id === 0">Nový záznam</span>
+        <span v-else>Upravit záznam</span>
+      </div>
       <form v-on:submit.prevent="submit" class="list" ref="form">
         <ul>
           <li>
@@ -77,7 +77,7 @@ export default {
       return parseInt(this.$route.params.id)
     },
     metrics() {
-      return this.$store.state.metrics
+      return this.$store.state.metrics.metrics
     }
   },
   methods: {
@@ -86,7 +86,7 @@ export default {
         return
       }
 
-      this.$store.commit('saveRecord', {
+      this.$store.commit('records/SAVE', {
         id: this.id,
         metric: this.metric,
         time: parseInt(new moment(this.time).format('x')),
@@ -95,13 +95,13 @@ export default {
     },
     remove() {
       if (window.confirm('Opravdu smazat tento záznam?')) {
-        this.$store.commit('deleteRecord', this.id)
+        this.$store.commit('records/DELETE', this.id)
         this.$router.go('-1')
       }
     },
   },
   created() {
-    var record = this.$store.state.records.find(item => item.time === this.id)
+    var record = this.$store.state.records.records.find(item => item.time === this.id)
     if (record) {
       this.metric = record.metric
       this.time = new moment(record.time).format(moment.HTML5_FMT.DATETIME_LOCAL)
